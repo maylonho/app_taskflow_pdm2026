@@ -5,6 +5,7 @@ import { styles } from './styles';
 import { router } from 'expo-router';
 import Botao from '@/components/Botao';
 import Titulo from '@/components/Titulo';
+import Card from '@/components/Card';
 
 export default function Home() {
     const [iniciado, setIniciado] = useState(false)
@@ -16,7 +17,7 @@ export default function Home() {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                <View style={styles.card}>
+                <Card>
                     <Image
                         source={require("../assets/images/logo.png")}
                         style={styles.logo}
@@ -42,7 +43,7 @@ export default function Home() {
                     />
                     
 
-                </View>
+                </Card>
             </View>
         </SafeAreaView>
     );
