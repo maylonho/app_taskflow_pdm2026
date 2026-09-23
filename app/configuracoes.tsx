@@ -1,5 +1,5 @@
 import { View, Text, Button } from 'react-native'
-import { styles } from './styles'
+import { styles } from '@/styles/global'
 import { router } from 'expo-router'
 import Botao from '@/components/Botao'
 
@@ -15,7 +15,7 @@ export default function Configuracoes() {
 
             <Botao
                 texto='Tarefas'
-                onPress={() => router.push("/tarefas")}
+                onPress={() => router.push("/tarefas/tarefas")}
             />
         </View>
     )
