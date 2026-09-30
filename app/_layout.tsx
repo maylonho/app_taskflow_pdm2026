@@ -10,8 +10,13 @@ export default function Layout(){
             />
 
             <Stack.Screen
-            name="tarefas"
+            name="tarefas/tarefas"
             options={{title: "Minhas Tarefas"}}
+            />
+
+            <Stack.Screen
+            name="tarefas/addTarefas"
+            options={{title: "Adicionar Tarefas"}}
             />
         </Stack>
     )
