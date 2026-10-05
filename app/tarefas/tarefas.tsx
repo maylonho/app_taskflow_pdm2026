@@ -3,7 +3,7 @@ import TarefaCard from "@/components/TarefaCard";
 import { router } from "expo-router";
 import { FlatList, SectionList, Text, View } from "react-native";
 import { styles } from "@/styles/global";
-import { carregarTarefas } from "@/utils/armazenamento";
+import { carregarTarefas, carregarUsuario } from "@/utils/armazenamento";
 import { useEffect, useState } from "react";
 
 type Tarefa = {
@@ -13,14 +13,21 @@ type Tarefa = {
     prioridade: string;
 }
 
+type Usuario = {
+    username: string;
+}
+
 export default function Tarefas() {
 
     const [tarefas, setTarefas] = useState<Tarefa[]>([])
+    const [usuario, setUsuario] = useState<Usuario | null>(null)
 
     useEffect(()=>{
         async function carregar() {
             const dados = await carregarTarefas();
+            const user = await carregarUsuario();
             setTarefas(dados);
+            setUsuario(user);
         }
         carregar();
     }, []);
@@ -28,6 +35,7 @@ export default function Tarefas() {
 
     return (
         <View style={styles.container}>
+            <Text style={{fontSize: 30}}>Seja bem vindo, {usuario ? usuario.username : ""}</Text>
             <Text style={styles.titulo}>Minhas Tarefas</Text>
 
             <FlatList
