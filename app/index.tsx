@@ -44,6 +44,10 @@ export default function Home() {
                     
 
                 </Card>
+                <Botao
+                    texto='Exercícios'
+                    onPress={()=>router.push("/atividades/atividades")}
+                />
             </View>
         </SafeAreaView>
     );
