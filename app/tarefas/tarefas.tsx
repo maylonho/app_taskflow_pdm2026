@@ -1,16 +1,19 @@
 import Botao from "@/components/Botao";
 import TarefaCard from "@/components/TarefaCard";
 import { router } from "expo-router";
-import { FlatList, SectionList, Text, View } from "react-native";
+import { ActivityIndicator, Alert, FlatList, SectionList, Text, View } from "react-native";
 import { styles } from "@/styles/global";
 import { carregarTarefas, carregarUsuario } from "@/utils/armazenamento";
 import { useEffect, useState } from "react";
+import api from "@/services/api";
+import { excluirTarefa, listarTarefas } from "@/services/tarefas";
 
 type Tarefa = {
-    id: string;
+    _id: string;
     titulo: string;
     descricao: string;
     prioridade: string;
+    concluida: boolean;
 }
 
 type Usuario = {
@@ -21,52 +24,106 @@ export default function Tarefas() {
 
     const [tarefas, setTarefas] = useState<Tarefa[]>([])
     const [usuario, setUsuario] = useState<Usuario | null>(null)
+    const [carregando, setCarregando] = useState(true)
+    const [erro, setErro] = useState(false)
 
-    useEffect(()=>{
+    async function excluir(id: string) {
+        Alert.alert(
+            "Excluir tarefa",
+            "Tem certeza de que deseja excluir esta tarefa?",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                {
+                    text: "Excluir",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            await excluirTarefa(id)
+
+                            const tarefasAtualizadas = await listarTarefas();
+                            setTarefas(tarefasAtualizadas)
+                        } catch (error) {
+                            Alert.alert("Erro", "Não foi possível excluir a tarefa!")
+                        }
+
+                    }
+                }
+            ]
+        )
+    }
+
+    useEffect(() => {
         async function carregar() {
-            const dados = await carregarTarefas();
+            try {
+                const dados = await listarTarefas();
+                setTarefas(dados);
+            } catch (error) {
+                console.error('Flaha ao buscar as tarefas', error)
+                setErro(true)
+            } finally {
+                setCarregando(false)
+            }
+
             const user = await carregarUsuario();
-            setTarefas(dados);
             setUsuario(user);
         }
         carregar();
     }, []);
 
+    if (carregando) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size={50} />
+            </View>
+        )
+    } if (erro) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>Erro ao buscar as tarefas.</Text>
+            </View>
+        )
+    } else {
+        return (
+            <View style={styles.container}>
+                <Text style={{ fontSize: 30 }}>Seja bem vindo, {usuario ? usuario.username : ""}</Text>
+                <Text style={styles.titulo}>Minhas Tarefas</Text>
 
-    return (
-        <View style={styles.container}>
-            <Text style={{fontSize: 30}}>Seja bem vindo, {usuario ? usuario.username : ""}</Text>
-            <Text style={styles.titulo}>Minhas Tarefas</Text>
+                <FlatList
+                    data={tarefas}
+                    contentContainerStyle={{ padding: 25 }}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => (
+                        <>
+                            <TarefaCard
+                                titulo={item.titulo}
+                                descricao={item.descricao}
+                                prioridade={item.prioridade}
+                                excluirTarefa={() => excluir(item._id)}
+                            />
+                        </>
 
-            <FlatList
-                data={tarefas}
-                contentContainerStyle={{padding: 25}}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                            <>
-                                <TarefaCard
-                                    titulo={item.titulo}
-                                    descricao={item.descricao}
-                                    prioridade={item.prioridade}
-                                />
-                            </>
+                    )}
 
-                )}
+                    ListEmptyComponent={
+                        <Text>Nenhuma tarefa na lista</Text>
+                    }
 
-                ListEmptyComponent={
-                    <Text>Nenhuma tarefa na lista</Text>
-                }
+                />
 
-            />
+                <Botao
+                    texto="Add +"
+                    onPress={() => router.push("/tarefas/addTarefas")}
+                />
+                <Botao
+                    texto="Configurações"
+                    onPress={() => router.push("/configuracoes")}
+                />
+            </View>
+        )
+    }
 
-            <Botao
-                texto="Add +"
-                onPress={()=>router.push("/tarefas/addTarefas")}
-            />
-            <Botao
-                texto="Configurações"
-                onPress={()=>router.push("/configuracoes")}
-            />
-        </View>
-    )
+
 }
