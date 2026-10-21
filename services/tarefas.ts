@@ -5,8 +5,18 @@ export async function listarTarefas() {
     return resposta.data;
 }
 
+export async function buscarTarefas(id: any) {
+    const resposta = await api.get(`/tarefas/${id}`);
+    return resposta.data;
+}
+
 export async function criarTarefas(tarefa:any) {
     const resposta = await api.post('/tarefas', tarefa);
+    return resposta.data;
+}
+
+export async function atualizarTarefas(id: string, tarefa:any) {
+    const resposta = await api.put(`/tarefas/${id}`, tarefa);
     return resposta.data;
 }
 

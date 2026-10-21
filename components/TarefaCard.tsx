@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native'
-import {Ionicons} from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
 
 interface TCProps {
     titulo: string
@@ -7,9 +7,10 @@ interface TCProps {
     prioridade: string
     concluida?: boolean
     excluirTarefa?: () => void
+    atualizarTarefa?: () => void
 }
 
-export default function TarefaCard({ titulo, descricao, prioridade, concluida, excluirTarefa }: TCProps) {
+export default function TarefaCard({ titulo, descricao, prioridade, concluida, excluirTarefa, atualizarTarefa }: TCProps) {
 
     return (
         <View style={[
@@ -17,20 +18,24 @@ export default function TarefaCard({ titulo, descricao, prioridade, concluida, e
             prioridade === "Alta" && { borderLeftColor: 'red' },
             prioridade === "Media" && { borderLeftColor: 'yellow' }
         ]}>
-            <Text style={styles.titulo}>{titulo}</Text>
-            <Text style={styles.descricao}>{descricao}</Text>
+            <Pressable
+                onPress={atualizarTarefa}
+            >
+                <Text style={styles.titulo}>{titulo}</Text>
+                <Text style={styles.descricao}>{descricao}</Text>
 
-            <View style={{alignSelf: 'flex-end'}}>
-                <Pressable
-                    onPress={excluirTarefa}
-                >
-                    <Ionicons 
-                        name='trash-outline'
-                        size={22}
-                        color={'red'}
-                    />
-                </Pressable>
-            </View>
+                <View style={{ alignSelf: 'flex-end' }}>
+                    <Pressable
+                        onPress={excluirTarefa}
+                    >
+                        <Ionicons
+                            name='trash-outline'
+                            size={22}
+                            color={'red'}
+                        />
+                    </Pressable>
+                </View>
+            </Pressable>
         </View>
     )
 }

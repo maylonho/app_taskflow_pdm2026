@@ -102,6 +102,12 @@ export default function Tarefas() {
                                 descricao={item.descricao}
                                 prioridade={item.prioridade}
                                 excluirTarefa={() => excluir(item._id)}
+                                atualizarTarefa={()=>
+                                    router.push({
+                                        pathname:"/tarefas/addTarefas",
+                                        params: {id: item._id}
+                                    })
+                                }
                             />
                         </>
 

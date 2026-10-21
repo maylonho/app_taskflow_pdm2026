@@ -14,6 +14,10 @@ const exercicios = [
     {
         nome: "Ex axios",
         rota: "/atividades/ex_axios"
+    },
+    {
+        nome: "Seleção de imagens",
+        rota: "/atividades/libraryImage"
     }
 ] as const;;
 
